@@ -54,8 +54,20 @@ class SelectionHub(object):
 
 
 class BasicDendrogramViewer(object):
+    def __init__(self, dendrogram, galactic=False):
 
-    def __init__(self, dendrogram):
+        if galactic:
+            self.ax1_limits = [0.1, 0.5, 0.8, 0.4] # image
+            self.slice_slider_ax_limits = [0.1, 0.15, 0.35, 0.03]
+            self.vmin_slider_ax_limits = [0.1, 0.10, 0.35, 0.03]
+            self.vmax_slider_ax_limits = [0.1, 0.05, 0.35, 0.03]
+            self.ax2_limits = [0.4, 0.1, 0.5, 0.35] # dendrogram
+        else:
+            self.ax1_limits = [0.1, 0.1, 0.4, 0.7] # image
+            self.slice_slider_ax_limits = [0.1, 0.95, 0.4, 0.03]
+            self.vmin_slider_ax_limits = [0.1, 0.90, 0.4, 0.03]
+            self.vmax_slider_ax_limits = [0.1, 0.85, 0.4, 0.03]
+            self.ax2_limits = [0.6, 0.3, 0.35, 0.4] # dendrogram
 
         if dendrogram.data.ndim not in [2, 3]:
             raise ValueError(
@@ -82,7 +94,7 @@ class BasicDendrogramViewer(object):
         import matplotlib.pyplot as plt
         self.fig = plt.figure(figsize=(14, 8))
 
-        self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7])
+        self.ax1 = self.fig.add_axes(self.ax1_limits)
 
         from matplotlib.widgets import Slider
 
@@ -102,7 +114,8 @@ class BasicDendrogramViewer(object):
 
                 self.slice = int(round(self.array.shape[0] / 2.))
 
-                self.slice_slider_ax = self.fig.add_axes([0.1, 0.95, 0.4, 0.03])
+                self.slice_slider_ax = self.fig.add_axes(
+                    self.slice_slider_ax_limits)
                 self.slice_slider_ax.set_xticklabels("")
                 self.slice_slider_ax.set_yticklabels("")
                 self.slice_slider = Slider(self.slice_slider_ax, "3-d slice", 0, self.array.shape[0], valinit=self.slice, valfmt="%i")
@@ -116,21 +129,21 @@ class BasicDendrogramViewer(object):
 
             self.image = self.ax1.imshow(self.array[self.slice, :,:], origin='lower', interpolation='nearest', vmin=self._clim[0], vmax=self._clim[1], cmap=plt.cm.gray)
 
-        self.vmin_slider_ax = self.fig.add_axes([0.1, 0.90, 0.4, 0.03])
+        self.vmin_slider_ax = self.fig.add_axes(self.vmin_slider_ax_limits)
         self.vmin_slider_ax.set_xticklabels("")
         self.vmin_slider_ax.set_yticklabels("")
         self.vmin_slider = Slider(self.vmin_slider_ax, "vmin", self._clim[0], self._clim[1], valinit=self._clim[0])
         self.vmin_slider.on_changed(self.update_vmin)
         self.vmin_slider.drawon = False
 
-        self.vmax_slider_ax = self.fig.add_axes([0.1, 0.85, 0.4, 0.03])
+        self.vmax_slider_ax = self.fig.add_axes(self.vmax_slider_ax_limits)
         self.vmax_slider_ax.set_xticklabels("")
         self.vmax_slider_ax.set_yticklabels("")
         self.vmax_slider = Slider(self.vmax_slider_ax, "vmax", self._clim[0], self._clim[1], valinit=self._clim[1])
         self.vmax_slider.on_changed(self.update_vmax)
         self.vmax_slider.drawon = False
 
-        self.ax2 = self.fig.add_axes([0.6, 0.3, 0.35, 0.4])
+        self.ax2 = self.fig.add_axes(self.ax2_limits)
         self.ax2.add_collection(self.lines)
 
         self.selected_label = {} # map selection IDs -> text objects

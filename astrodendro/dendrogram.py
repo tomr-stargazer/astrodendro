@@ -469,14 +469,14 @@ class Dendrogram(object):
         from .plot import DendrogramPlotter
         return DendrogramPlotter(self)
 
-    def viewer(self):
+    def viewer(self, **kwargs):
         """
         Launch an interactive viewer to explore the dendrogram.
 
         This functionality is only available for 2- or 3-d datasets.
         """
         from .viewer import BasicDendrogramViewer
-        return BasicDendrogramViewer(self)
+        return BasicDendrogramViewer(self, **kwargs)
 
     def prune(self, min_delta=0, min_npix=0, is_independent=None):
         '''
