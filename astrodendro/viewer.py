@@ -58,9 +58,9 @@ class BasicDendrogramViewer(object):
 
         if galactic:
             self.ax1_limits = [0.1, 0.5, 0.8, 0.4] # image
-            self.slice_slider_ax_limits = [0.1, 0.15, 0.35, 0.03]
-            self.vmin_slider_ax_limits = [0.1, 0.10, 0.35, 0.03]
-            self.vmax_slider_ax_limits = [0.1, 0.05, 0.35, 0.03]
+            self.slice_slider_ax_limits = [0.05, 0.2, 0.25, 0.03]
+            self.vmin_slider_ax_limits = [0.05, 0.15, 0.25, 0.03]
+            self.vmax_slider_ax_limits = [0.05, 0.1, 0.25, 0.03]
             self.ax2_limits = [0.4, 0.1, 0.5, 0.35] # dendrogram
         else:
             self.ax1_limits = [0.1, 0.1, 0.4, 0.7] # image
