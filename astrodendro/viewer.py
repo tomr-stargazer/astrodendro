@@ -5,6 +5,7 @@ from collections import defaultdict
 import numpy as np
 from .plot import DendrogramPlotter
 
+from wcsaxes import WCSAxes
 
 class SelectionHub(object):
 
@@ -56,8 +57,9 @@ class SelectionHub(object):
 
 
 class BasicDendrogramViewer(object):
+    def __init__(self, dendrogram, wcs=None):
 
-    def __init__(self, dendrogram):
+        self.ax1_limits = [0.1, 0.1, 0.4, 0.7] # image
 
         if dendrogram.data.ndim not in [2, 3]:
             raise ValueError(
@@ -84,7 +86,12 @@ class BasicDendrogramViewer(object):
         import matplotlib.pyplot as plt
         self.fig = plt.figure(figsize=(14, 8))
 
-        self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7])
+        if wcs is not None:
+            ax1 = WCSAxes(self.fig, self.ax1_limits, wcs=wcs)
+            self.ax1 = self.fig.add_axes(ax1)
+        else:
+            self.ax1 = self.fig.add_axes(self.ax1_limits)
+
 
         from matplotlib.widgets import Slider
 
