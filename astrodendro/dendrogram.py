@@ -88,7 +88,8 @@ class Dendrogram(object):
 
     @staticmethod
     def compute(data, min_value=-np.inf, min_delta=0, min_npix=0,
-                is_independent=None, verbose=False, neighbours=None):
+                is_independent=None, verbose=False, neighbours=None,
+                wcs=None):
         """
         Compute a dendrogram from a Numpy array.
 
@@ -127,6 +128,10 @@ class Dendrogram(object):
             .. note:: ``idx`` refers to location in a copy of the input data
                        that has been padded with one element along each edge.
 
+        wcs : astropy.wcs.wcs.WCS, optional
+            A WCS object for `data`. Used for WCSAxes integration when calling
+            Dendrogram.viewer().
+
         Examples
         --------
 
@@ -164,6 +169,9 @@ class Dendrogram(object):
         keep = self.data > min_value
         data_values = self.data[keep]
         indices = np.vstack(np.where(keep)).transpose()
+
+        # Should we validate the input WCS somehow?
+        self.wcs = wcs
 
         if verbose:
             print("Generating dendrogram using {:,} of {:,} pixels ({}% of data)".format(data_values.size, self.data.size, (100 * data_values.size / self.data.size)))
