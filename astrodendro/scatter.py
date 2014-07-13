@@ -22,6 +22,15 @@ class Scatter(object):
         >>> ds = Scatter(d, dv.hub, catalog, 'radius', 'v_rms')
         >>> dv.show()
 
+    To set logarithmic scaling on the x, y axes or both, the following
+    convenience methods are defined:
+
+        >>> ds.set_loglog()
+        >>> ds.set_semilogx()
+        >>> ds.set_semilogy()
+        # These can be unset by passing a `log=False` keyword, i.e.
+        >>> ds.set_loglog(False)
+
     For more information on using Scatter, see the online
     documentation.
 
@@ -30,7 +39,6 @@ class Scatter(object):
     def __init__(self, dendrogram, hub, catalog, xaxis, yaxis):
 
         self.hub = hub
-        self.hub.add_callback(self.update_selection)
         self.dendrogram = dendrogram
         self.structures = list(self.dendrogram.all_structures)
 
@@ -56,6 +64,11 @@ class Scatter(object):
         self.hub.add_callback(self.update_selection)
 
         self.cid = self.fig.canvas.mpl_connect('button_press_event', self.onpress)
+
+        # If things are already selected in the hub, go select them!
+        for selection_id in self.hub.selections:
+            self.update_selection(selection_id)
+        
 
     def _draw_plot(self):
 
@@ -118,4 +131,29 @@ class Scatter(object):
             self.ydata[selected_indices], 
             'o', color=self.hub.colors[selection_id], zorder=struct.height)[0]
 
+        self.fig.canvas.draw()
+
+    def set_loglog(self, log=True):
+        """ Convenience function to make the plot logarithmic """
+
+        if log:
+            self.axes.set_xscale('log')
+            self.axes.set_yscale('log')
+        else:
+            self.axes.set_xscale('linear')
+            self.axes.set_yscale('linear')            
+        self.fig.canvas.draw()
+
+    def set_semilogx(self, log=True):
+        if log:
+            self.axes.set_xscale('log')
+        else:
+            self.axes.set_xscale('linear')            
+        self.fig.canvas.draw()
+
+    def set_semilogy(self, log=True):
+        if log:
+            self.axes.set_yscale('log')
+        else:
+            self.axes.set_yscale('linear')            
         self.fig.canvas.draw()
